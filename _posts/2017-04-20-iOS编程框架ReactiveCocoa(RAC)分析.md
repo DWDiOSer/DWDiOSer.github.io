@@ -1,3 +1,8 @@
+---
+layout: post
+title: iOS编程框架ReactiveCocoa(RAC)分析
+date: 2017-04-20 14:36:24.000000000 +09:00
+---
 # iOS编程框架ReactiveCocoa(RAC)分析
 
 ## RAC简介
