@@ -4,13 +4,16 @@ title: 开源工程 CocoaLumberjack 学习笔记
 date: 2017-04-26 16:36:24.000000000 +09:00
 ---
 
-##CocoaLumberjack 学习笔记
-###1.1 基本介绍
+## CocoaLumberjack 学习笔记
+
+### 1.1 基本介绍
+
 CocoaLumberjack是一个开源工程，为Xcode提供分级打印的策略，源码地址就是：[CocoaLumeberjack](https://github.com/CocoaLumberjack/CocoaLumberjack) 在git上有将近9k的star，这个库包含的几个对象可以按需求把Log输出到不同的地方：
 * Console.app
 * Xcode控制台
 * file文件
 * DataBase 等
+
 然后可以通过自己的ddLogLevel来定义日志的打印等级
 
 ```
@@ -63,7 +66,8 @@ typedef NS_ENUM(NSUInteger, DDLogLevel){
 
 因为一个 DDLog 可以把 log 分发到所有其下注册的 Logger 下，也就是说一个 log 可以同时打到控制台，打到远程服务器，打到本地文件。
 
-###1.2 具体代码部分
+### 1.2 具体代码部分
+
 Lumberjack的核心是DDLog,也是其必须实现的，其基本实现也在DDLog这文件中我们在其中找到了第一节当中介绍的那个宏的方法
 
 ```
@@ -78,15 +82,25 @@ Lumberjack的核心是DDLog,也是其必须实现的，其基本实现也在DDLo
      format:(NSString *)format, ... NS_FORMAT_FUNCTION(9,10)
 ```
 这里介绍下这几个参数：
+
 `asynchronous` BOOL值是否进行异步操作，具体的是指其在加入logger类时的同步和异步性这里不同的logger类是在最开始的时候说的将log信息传到不同地方的logger类；
+
 `level`就是日志等级；
+
 `flag`日志标记，通过标记来和日志等级比较 error最高，verbose最低，flag > level就输出，否则不输出；
+
 `context`上下文，这里我的理解是给用户一个自定义环境的作用，例如区分不同网络环境；
+
 `file`所在那个类的文件名；
+
 `function`所在那个方法的方法名；
+
 `line` 所在代码的行数；
+
 `tag` 可能会用到的tag值；
+
 `format` log的相关参数，或者说log的格式
+
 这里传递参数的方式是用了va_list，然后DDLog类又创建了一个DDLogMessage来封装log信息里面的各个参数
 
 ```
@@ -168,11 +182,12 @@ Lumberjack的核心是DDLog,也是其必须实现的，其基本实现也在DDLo
 
 ```
 
-Lumberjack又分别定义了 `DDFileLogger` ` DDOSLogger` `DDTTYLogger` `DDASLLoger`来分别实现往不同地方输出Log的Logger类
+Lumberjack又分别定义了 `DDFileLogger` ` DDOSLogger` `DDTTYLogger` `DDASLLoger`来分别实现往不同地方输出Log的Logger类。可以见使用部分。
 
-###1.3 使用方法
+### 1.3 使用方法 
+
 示例代码：
-我们在全局某处增加log等级之后就可以添加相应的Logger,它的DDLog语法上和NSLog完全相同
+我们在全局某处增加log等级之后就可以添加相应的Logger,它的DDLog语法上和NSLog完全相同。
 
 ```
 
