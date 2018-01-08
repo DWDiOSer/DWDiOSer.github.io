@@ -1,6 +1,6 @@
 ---
 layout: post
-title:JavaScriptCore 探究（1）
+title: JavaScriptCore 探究（1）
 date: 2017-12-29 
 name: yucy
 ---
@@ -145,3 +145,4 @@ NSLog(@"%@", value);
 声明继承自 JSExport 的自定义协议，把实现这个协议的类的对象暴露给 JavaScript 时，JavaScript 中会生成一个对应的 JavaScript 对象，然后 JavaScriptCore 会按照这个协议中声明的内容遍历实现这个协议的类，把协议中声明的方法转换成 JavaScript 函数（对象中的属性，实质上是转换成getter 和 setter 方法）。
 转换方法和之前说的 block 类似，创建一个 JavaScript 方法包装着 Object-C 中的方法，然后协议中声明的方法转换成 JavaScript 对象上的实例方法。
 参考：[http://www.cocoachina.com/ios/20170720/19958.html](http://www.cocoachina.com/ios/20170720/19958.html)
+
