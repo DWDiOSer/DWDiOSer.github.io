@@ -4,7 +4,7 @@ title: 开源工程 CocoaLumberjack 学习笔记
 date: 2017-04-26 16:36:24.000000000 +09:00
 ---
 
-## CocoaLumberjack 学习笔记
+## WangYijian
 
 ### 1.1 基本介绍
 
