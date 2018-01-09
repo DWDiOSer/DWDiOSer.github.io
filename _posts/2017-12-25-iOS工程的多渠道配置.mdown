@@ -1,0 +1,48 @@
+---
+layout: post
+title: iOS工程的多渠道配置
+date: 2017-12-25 15:32:24.000000000 +09:00
+---
+
+# iOS工程的多渠道配置
+
+目前公司推广业务，都是使用App Store上的包，但是在正式包上线前，都会用企业账号打个灰发包，用于前期更大范围的测试。两个渠道包的配置略有不同，这时候，就需要另外创建一个target来控制两个版本了。
+
+基本步骤如下：
+
+1、拷贝原工程target XXX
+
+![copy-target.png](http://upload-images.jianshu.io/upload_images/5872849-0cf95f566ff374bd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+2、对cpoy后的"XXX copy"重命名，主目录下的"XXX-copy-info.plist"重命名，在Build Settings中修改新增的target的plist的路径，如果有需要修改版本号、bundleId、Display Name等配置。
+
+![修改plist名字、路径.png](http://upload-images.jianshu.io/upload_images/5872849-3f0af56f34bbedb7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+3、点击xcode左上角Run、Stop右边的工程名称，下拉框中选择Manage Schemes，在弹出框中，点击XXX copy那行，进行重命名
+
+![重命名target.png](http://upload-images.jianshu.io/upload_images/5872849-68edd264fc10e2b3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+4、工程代码里需要区分不同渠道的话，只需要在`Build Settings` `Preprocessor Macros`中添加相应的预编译宏即可
+
+
+![渠道预编译宏.png](http://upload-images.jianshu.io/upload_images/5872849-e7c06973c8cf7602.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+
+在代码中，使用正常的写法
+
+```
+#if INHOUSE
+
+#else
+
+#endif
+```
+
+5、若工程里集成了cocoa pods，不同渠道需要区分不同的第三方库，我们可以在Podfile里对各个渠道进行不同的配置。
+
+![Podfile配置.png](http://upload-images.jianshu.io/upload_images/5872849-2fddf6fc96c4151c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+
