@@ -1,12 +1,12 @@
 ---
 layout: post
-title: iOS路由层研究与设计
+title: iOS卡顿监控方案
 date: 2017-09-20 15:32:24.000000000 +09:00
 ---
 
 # iOS卡顿监控方案
 
-##界面卡顿原因
+## 界面卡顿原因
 
 1. 死锁：主线程拿到锁A，需要获得锁B，而同时某个子线程拿了锁B，需要锁A，这样互相等待就造成死锁了。
 2. 主线程大量IO：主线程为了方便直接写入大量数据，会导致界面卡顿。
@@ -16,22 +16,23 @@ date: 2017-09-20 15:32:24.000000000 +09:00
 卡顿问题不易重现，受环境影响较大，部分问题只有在特定用户或特定环境下才能出现，定位问题困难。
 ```
 
-##如何检测程序卡顿
+## 如何检测程序卡顿
 
-###判断卡顿标准
+### 判断卡顿标准
 怎么判断主线程是不是发生了卡顿？一般来说，用户感受得到的卡顿大概有三个特征：
 1. FPS 降低
 2. CPU 占用率很高
 3. 主线程 Runloop 执行了很久
 
-###FPS检测
+### FPS检测
+
 为了保证设备程序的运行流畅，iOS应用应该尽量达到接近60fps的绘制效率。即主线程中有单个的计算任务不应该超过（1/60s≈16.67ms）。我们可以通过Instrument设置16ms的采样率可以检测出大部分费时的任务。但是Instrument每次都需要profile一次重新编译，并且只能针对特定的操作场景进行检测，要预先知道卡顿产生的场景，无法做到及时检测。
 
 为了能够实时监测卡顿我们可以先创建一个子线程进行循环检测，每次检测时设置标记位为YES，然后派发任务到主线程中将标记位设置为NO。接着子线程沉睡超时阙值时长，判断标志位是否成功设置成NO。如果没有说明主线程发生了卡顿，无法处理派发任务。
 
 ![syn](./syn.jpeg)
 
-###基于CADisplayLink
+### 基于CADisplayLink
 
 CADisplayLink是一个根据设备屏幕的刷新频率来计算的定时器，当CADisplayLink以注册到runloop之后，每当屏幕需要刷新的时候，runloop就会调用CADisplayLink绑定的target上的select。
 
@@ -66,7 +67,7 @@ dispatch_async(monitor_queue(), ^{
 ```
 
 
-###基于RunLoop
+### 基于RunLoop
 
 RunLoops是thread线程的保活基础.它的本质是一个运行着的循环,更加确切的说是线程中的循环.它用来接受循环事件和安排线程的工作,并且在线程中没有工作时,让线程进入睡眠状态.RunLoop循环的流程如下：
 
@@ -123,7 +124,7 @@ RunLoops是thread线程的保活基础.它的本质是一个运行着的循环,�
 由此我们可以发现在RunLoop中任务处理是在是在Observers接受kCFRunLoopAfterWaiting之后，到kCFRunLoopBeforeWaiting截止这一段时间中进行处理的
 。那么，我们只需要在主线程的RunLoop中添加一个observer，检测从 kCFRunLoopBeforeSources 到 kCFRunLoopBeforeWaiting 花费的时间 是否过长。如果花费的时间大于某一个阙值，我们就认为发生了卡顿。
 
-###RunLoop实现步骤
+### RunLoop实现步骤
 1.创建一个子线程，并且启动其RunLoop。
 
 ```
@@ -207,11 +208,11 @@ static void runLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActi
 
 ```
 
-##如何获取卡顿时有用信息
+## 如何获取卡顿时有用信息
 
 NSThread 有一个类方法 callstackSymbols 可以获取调用栈，但是它只能输出的是当前线程的调用栈。在利用检测卡顿时，我们使用了子线程来检测主线程发，这时系统提供的方法就无法获取主线程的调用栈了。
 
-###获取主线程调用栈
+### 获取主线程调用栈
 
 调用栈上每一个单位被称作栈帧（stack frame），栈帧由三部分组成:函数参数，返回地址，帧内的变量。Stack Pointer(栈指针)表示当前栈的顶部，每个栈帧还保存了上一个栈帧的 Frame Pointer。换句话说，只要能获取到栈顶的Frame Pointer就能递归遍历整个栈上的帧。
 
@@ -222,7 +223,7 @@ NSThread 有一个类方法 callstackSymbols 可以获取调用栈，但是它�
 在项目中，调用栈存储在 backtraceBuffer 数组中，其中每一个指针对应了一个栈帧，每个栈帧又对应一个函数调用，并且每个函数都有自己的符号名。
 
 
-###解析Frame Pointer
+### 解析Frame Pointer
 解析Frame Pointer就是根据栈帧的 Frame Pointer 获取到这个函数调用的符号名。
 
 接下来根据 Frame Pointer 对应的符号名也可以分为以下几步:
