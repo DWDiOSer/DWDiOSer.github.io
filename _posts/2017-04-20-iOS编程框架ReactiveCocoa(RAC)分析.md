@@ -3,7 +3,8 @@ layout: post
 title: iOS编程框架ReactiveCocoa(RAC)分析
 date: 2017-04-20 14:36:24.000000000 +09:00
 ---
-# iOS编程框架ReactiveCocoa(RAC)分析
+
+# pxl
 
 ## RAC简介
 >ReactiveCocoa(简称RAC),是一个函数响应式编程框架，是由GitHub开源的一个应用于iOS和OS开发的新框架，Cocoa是苹果整套框架的简称，因此很多苹果框架喜欢以Cocoa结尾。
