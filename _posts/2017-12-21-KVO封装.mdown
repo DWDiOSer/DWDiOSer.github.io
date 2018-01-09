@@ -97,7 +97,7 @@ KVO所有的改变通知回调都被到了都被集中到了一个单独的方�
 
 3、在KvoPoint接收到消息回调时，把KVO消息回调转发给A
 
-![](KVO消息转发思维导图.png)
+![KVO消息转发思维导图.png](http://upload-images.jianshu.io/upload_images/5872849-d7197de2d7ab7ea6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
 ####下面是核心代码：
@@ -228,7 +228,7 @@ kvoInfo配置
   
 当观察者和被观察者建立连接时，我们可以把这一连接描述成一幅有向图。
 
-![](A的有向图.jpeg)
+![A的有向图.jpeg](http://upload-images.jianshu.io/upload_images/5872849-6ec1ec8564362d4f.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 如上图所示，对象A监听B某一个属性，但同时又是C的监听对象，如果A把监听自己的对象C信息也保存下来，是不是就能够在自己被销毁前，先手动移除所有的KVO。
 
